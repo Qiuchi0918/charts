@@ -79,6 +79,8 @@ server:
   #   - exchange.sink-buffer-pool-min-size=10
   #   - exchange.sink-buffers-per-partition=2
   #   - exchange.source-concurrent-readers=4
+  #   - exchange.pvc-storage-class=standard
+  #   - exchange.pvc-size=1Gi
   # ```
 
   workerExtraConfig: ""

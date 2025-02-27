@@ -1,0 +1,16 @@
+{{- if .Values.additionalExchangeManagerProperties.exchange.pvc-storage-class }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "trino.fullname" . }}-exchange-manager
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "trino.labels" . | nindent 4 }}
+    app.kubernetes.io/component: exchange-manager
+spec:
+  storageClassName: {{ .Values.additionalExchangeManagerProperties.exchange.pvc-storage-class }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.additionalExchangeManagerProperties.exchange.pvc-size }}

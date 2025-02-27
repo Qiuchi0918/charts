@@ -100,6 +100,11 @@ spec:
         {{- with .Values.worker.additionalVolumes }}
         {{- tpl (. | toYaml) $ | nindent 8 }}
         {{- end }}
+        {{- if .Values.additionalExchangeManagerProperties.exchange.pvc-storage-class }}
+        - name: exchange-manager-volume
+          persistentVolumeClaim:
+            claimName: {{ template "trino.fullname" . }}-exchange-manager
+        {{- end }}
       {{- if .Values.initContainers.worker }}
       initContainers:
       {{- tpl (toYaml .Values.initContainers.worker) . | nindent 6 }}
@@ -126,6 +131,12 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.server.config.path }}
               name: config-volume
+            {{- if or .Values.additionalExchangeManagerProperties.exchange.pvc-storage-class }}
+            {{- range .Values.server.exchangeManager.baseDir }}
+            - mountPath: {{ .Values.server.config.path }}/exchange/{{ . }}
+              name: {{ template "trino.fullname" . }}-exchange-manager
+            {{- end }}
+            {{- end }}
             {{- if or .Values.catalogs .Values.additionalCatalogs }}
             - mountPath: {{ .Values.server.config.path }}/catalog
               name: catalog-volume
